@@ -8,10 +8,11 @@ global HealingLoop := [ 2, 1000 ] ; ตำแหน่งปุ่มสำห�
 global isMininHealing := False ; ตรวจสอบว่าหยุดหรือยัง
 global MiniHealingLoop := [ 1, 1500 ] ; ตำแหน่งปุ่มสำหรับ มินิฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Next
 
-global BetweenHealing1 = [8, 12000] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก 
-global BetweenHealing2 = [9, 10000] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
+global BetweenHealing1 = [ 8, 12000 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก 
+global BetweenHealing2 = [ 9, 9000 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
+global BetweenHealing3 = False ; [ 0, 9000 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
 
-global FirstStep := [ [3, 500], [4, 500] ] ; ตำแหน่งปุ่มสำหรับเริ่มต้น [ ปุ่ม, ระยะเวลา ] จะทำงานก่อน ฮิว หลัก
+global FirstStep := [ [3, 500], [4, 500] ] ;[ [3, 500], [4, 500] ] ; ตำแหน่งปุ่มสำหรับเริ่มต้น [ ปุ่ม, ระยะเวลา ] จะทำงานก่อน ฮิว หลัก
 
 FindWindowTarget( ) {
     if !WindowTarget {
@@ -53,16 +54,21 @@ StartHeal( ) {
         }
     
         HealTimer := HealingLoop[2]
-        SetTimer HealingTimer, %HealTimer%
+        SetTimer, HealingTimer, %HealTimer%
 
         if BetweenHealing1 {
             BGTimer := BetweenHealing1[2]
-            SetTimer BetweenHealingTimer1, %BGTimer%
+            SetTimer, BetweenHealingTimer1, %BGTimer%
         }
 
         if BetweenHealing2 {
             BGTimer := BetweenHealing2[2]
-            SetTimer BetweenHealingTimer2, %BGTimer%
+            SetTimer, BetweenHealingTimer2, %BGTimer%
+        }
+
+        if BetweenHealing3 {
+            BGTimer := BetweenHealing3[2]
+            SetTimer, BetweenHealingTimer3, %BGTimer%
         }
     
         TrayTip
@@ -73,9 +79,10 @@ StartHeal( ) {
 }
 
 StopHeal( ) {
-    SetTimer HealingTimer, Off
-    SetTimer BetweenHealingTimer1, Off
-    SetTimer BetweenHealingTimer2, Off
+    SetTimer, HealingTimer, Off
+    SetTimer, BetweenHealingTimer1, Off
+    SetTimer, BetweenHealingTimer2, Off
+    SetTimer, BetweenHealingTimer3, Off
     isHealing := False
     TrayTip
     TrayTip, AutoHeal, หยุดแล้ว
@@ -182,6 +189,17 @@ BetweenHealingTimer2:
     if WindowTarget {
         WinGet, WindowTargetPID, PID, ahk_id %WindowTarget%
         BGButton := BetweenHealing2[1]
+        ControlSend, , {%BGButton%}, ahk_pid %WindowTargetPID%
+    }
+
+
+Return
+
+BetweenHealingTimer3:
+
+    if WindowTarget {
+        WinGet, WindowTargetPID, PID, ahk_id %WindowTarget%
+        BGButton := BetweenHealing3[1]
         ControlSend, , {%BGButton%}, ahk_pid %WindowTargetPID%
     }
 
