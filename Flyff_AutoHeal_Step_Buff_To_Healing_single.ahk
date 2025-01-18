@@ -8,11 +8,55 @@ global HealingLoop := [ 2, 1000 ] ; ตำแหน่งปุ่มสำห�
 global isMininHealing := False ; ตรวจสอบว่าหยุดหรือยัง
 global MiniHealingLoop := [ 1, 1500 ] ; ตำแหน่งปุ่มสำหรับ มินิฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Next
 
-global BetweenHealing1 = [ 8, 12000 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก 
-global BetweenHealing2 = [ 9, 9000 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
+global BetweenHealing1 = [ 8, 7500 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก 
+global BetweenHealing2 = [ 9, 10000 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
 global BetweenHealing3 = False ; [ 0, 9000 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
 
-global FirstStep := [ [3, 500], [4, 500] ] ;[ [3, 500], [4, 500] ] ; ตำแหน่งปุ่มสำหรับเริ่มต้น [ ปุ่ม, ระยะเวลา ] จะทำงานก่อน ฮิว หลัก
+global FirstStep := [ [ 3, 500 ], [4, 500 ] ] ; ตำแหน่งปุ่มสำหรับเริ่มต้น [ ปุ่ม, ระยะเวลา ] จะทำงานก่อน ฮิว หลัก
+
+global IsShowTrayTip := False
+
+; ขนาดหน้าต่าง UI
+GuiWidth := 100
+GuiHeight := 25
+
+; คำนวณตำแหน่งขวาล่างของหน้าจอ
+PosX := A_ScreenWidth - GuiWidth - 5  ; ห่างจากขอบขวา 10 พิกเซล
+PosY := A_ScreenHeight - GuiHeight - 50 ; ห่างจากขอบล่าง 10 พิกเซล
+
+; กำหนดสถานะเริ่มต้น
+StatusText := "Ready"
+GuiColor := "White"
+
+; สร้าง GUI
+Gui, +AlwaysOnTop +ToolWindow -Caption +E0x20
+Gui, Color, %GuiColor%
+Gui, Font, s10, Verdana
+Gui, Add, Text, Center x0 y4 w%GuiWidth% h%GuiHeight% vStatusText, %StatusText%
+
+; แสดง GUI ที่มุมขวาล่าง
+Gui, Show, x%PosX% y%PosY% w%GuiWidth% h%GuiHeight%, Status UI
+
+; ฟังก์ชันเปลี่ยนสถานะ
+ChangeStatus(status, color) {
+    global
+    GuiColor := color
+    StatusText := status
+    Gui, Color, %GuiColor%
+    GuiControl,, StatusText, %StatusText%
+}
+
+
+GuiShow( status, color ) {
+    Gui, Show
+    ChangeStatus( status, color )
+}
+
+GuiHide( ) {
+    Gui, Hide
+}
+
+GuiHide( )
 
 FindWindowTarget( ) {
     if !WindowTarget {
@@ -20,8 +64,10 @@ FindWindowTarget( ) {
             WinGet, WindowTarget, ID, ahk_exe firefox.exe 
         } else {
             WindowTarget := False
-            TrayTip
-            TrayTip, AutoHeal, กรุณาเปิดโปรแกรม Firefox
+            if IsShowTrayTip {
+                TrayTip
+                TrayTip, AutoHeal, Please open the Firefox
+            }
             Return
         }
     }
@@ -33,12 +79,10 @@ StartHeal( ) {
         FindWindowTarget( )
     }
 
-    if isMininHealing {
-        StopMiniHeal( )
-    }
-
     if WindowTarget {
         
+        GuiShow( "Healing", "Green" )
+
         if FirstStep {
             For i, Value in FirstStep {
     
@@ -70,9 +114,7 @@ StartHeal( ) {
             BGTimer := BetweenHealing3[2]
             SetTimer, BetweenHealingTimer3, %BGTimer%
         }
-    
-        TrayTip
-        TrayTip, AutoHeal, เริ่มฮิวแล้ว
+
         isHealing := True
     }
 
@@ -84,31 +126,34 @@ StopHeal( ) {
     SetTimer, BetweenHealingTimer2, Off
     SetTimer, BetweenHealingTimer3, Off
     isHealing := False
-    TrayTip
-    TrayTip, AutoHeal, หยุดแล้ว
+    GuiShow( "Heal Stopping", "Green" )
 }
 
 StartMiniHeal( ) {
-
-    if isHealing {
-        StopHeal( )
-    }
 
     if !WindowTarget {
         FindWindowTarget( )
     }
 
     if WindowTarget {
-         if !isMininHealing {
+        if !isMininHealing {
+            GuiShow( "Mini Healing", "Yellow" )
 
             WinGet, WindowTargetPID, PID, ahk_id %WindowTarget%
+            MiniHealButton := MiniHealingLoop[1]
             ControlSend, , {%MiniHealButton%}, ahk_pid %WindowTargetPID%
     
             intervalMiniHealing := MiniHealingLoop[2]
             SetTimer, MiniHealingTimer, %intervalMiniHealing%
     
             isMininHealing := True
-         }
+            
+            if IsShowTrayTip {
+                TrayTip
+                TrayTip, AutoHeal, Start Mini Healing
+            }
+
+        }
     }
 
 }
@@ -116,42 +161,47 @@ StartMiniHeal( ) {
 StopMiniHeal( ) {
     if isMininHealing {
         SetTimer, MiniHealingTimer, Off
-        isMininHealing := False 
+        isMininHealing := False
+
+        if IsShowTrayTip {
+            TrayTip
+            TrayTip, AutoHeal, Mini Heal Stopped
+        }
+        GuiShow( "Mini Stopping", "Yellow" )
     }
 }
 
 XButton1::
 
-    if !isHealing {
-        StartHeal( )
-    } else {
-        StopHeal( )
+    if isMininHealing {
+        StopMiniHeal( )
+        Sleep 500
     }
 
+    if isHealing {
+        StopHeal( )
+        GuiHide()
+    } else {
+        StartHeal( )
+    }
+    
 return
 
 XButton2::
 
-    if !isMininHealing {
-        StartMiniHeal( )
-
-        TrayTip
-        TrayTip, AutoHeal, เริ่มมินิฮิวแล้ว
-    } else {
-        StopMiniHeal( )
-
-        TrayTip
-        TrayTip, AutoHeal, หยุดมินิฮิวแล้ว
-    }
-
-return
-
-End::
     if isHealing {
         StopHeal( )
+        Sleep 500
     }
-return
 
+    if isMininHealing {
+        StopMiniHeal( )
+        GuiHide()
+    } else {
+        StartMiniHeal( )
+    }
+
+return
 
 HealingTimer:
 
@@ -213,3 +263,5 @@ IsInArray(array, value) {
     }
     return false
 }
+
+FindWindowTarget( )
