@@ -6,13 +6,19 @@ global isHealing := False ; ตรวจสอบว่าหยุดหรื�
 global HealingLoop := [ 2, 1000 ] ; ตำแหน่งปุ่มสำหรับ ฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Back
 
 global isMininHealing := False ; ตรวจสอบว่าหยุดหรือยัง
-global MiniHealingLoop := [ 1, 1500 ] ; ตำแหน่งปุ่มสำหรับ มินิฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Next
+global MiniHealingLoop := [ 1, 1200 ] ; ตำแหน่งปุ่มสำหรับ มินิฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Next
 
 global BetweenHealing1 = [ 8, 7500 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก 
-global BetweenHealing2 = [ 9, 10000 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
+global BetweenHealing2 = [ 9, 9000 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
 global BetweenHealing3 = False ; [ 0, 9000 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
 
 global FirstStep := [ [ 3, 500 ], [4, 500 ] ] ; ตำแหน่งปุ่มสำหรับเริ่มต้น [ ปุ่ม, ระยะเวลา ] จะทำงานก่อน ฮิว หลัก
+
+global isRepeatBuff := False 
+global isBuff := False
+global IntervalBuffs := 1000 * 60 * 10 ; ตั้งเวลาให้บัฟทุกๆ 10 นาที
+global DelayBuff := 800 ; หน่วงเวลาระหว่างการกดปุ่ม
+global buttonBuffs := [ "F3", 1, 2, 3, 4, 5, 6, "F4", 1, 2, 3, 4, 5, "F1" ] ; ปุ่มที่ใช้ในการบัฟ
 
 global IsShowTrayTip := False
 
@@ -45,7 +51,6 @@ ChangeStatus(status, color) {
     Gui, Color, %GuiColor%
     GuiControl,, StatusText, %StatusText%
 }
-
 
 GuiShow( status, color ) {
     Gui, Show
@@ -171,7 +176,67 @@ StopMiniHeal( ) {
     }
 }
 
+; ฟังก์ชันเริ่มต้นการบัฟ
+StartBuff() {
+    if !WindowTarget {
+        FindWindowTarget()
+    }
+
+    if WindowTarget {
+        StartBuffs()
+        if isRepeatBuff {
+            SetTimer, TimerBuffs, %IntervalBuffs%
+        } else {
+            StopBuff()
+        }
+    } else {
+        isBuff := False
+        if IsShowTrayTip {
+            TrayTip
+            TrayTip, AutoBuff, Please Open The Firefox
+        }
+    }
+}
+
+; ฟังก์ชันหยุดการบัฟ
+StopBuff() {
+    SetTimer, TimerBuffs, Off
+    isBuff := False
+    GuiHide()
+}
+
+; ฟังก์ชันเริ่มต้นการกดปุ่มบัฟ
+StartBuffs() {
+    if WindowTarget {
+        GuiShow("Buffing", "Blue")
+        WinGet, WindowTargetPID, PID, ahk_id %WindowTarget%
+
+        if buttonBuffs {
+            isBuff := True
+            For i, PressKey in buttonBuffs {
+                WinGet, WindowTargetPID, PID, ahk_id %WindowTarget%
+                ControlSend, , {%PressKey%}, ahk_pid %WindowTargetPID%
+                Sleep, DelayBuff
+            }
+            GuiShow("Waiting", "Red")
+        }
+    }
+}
+
+; การกดปุ่ม XButton1 เพื่อเริ่มหรือหยุดการบัฟ
+Insert::
+    if isBuff {
+        StopBuff()
+    } else {
+        StartBuff()
+    }
+return
+
 XButton1::
+
+    if isBuff {
+        StopBuff()
+    }
 
     if isMininHealing {
         StopMiniHeal( )
@@ -189,6 +254,10 @@ return
 
 XButton2::
 
+    if isBuff {
+        StopBuff()
+    }
+
     if isHealing {
         StopHeal( )
         Sleep 500
@@ -202,6 +271,11 @@ XButton2::
     }
 
 return
+
+; ตัวจับเวลาเพื่อเริ่มต้นการบัฟ
+TimerBuffs:
+    StartBuffs()
+Return
 
 HealingTimer:
 
