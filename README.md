@@ -1,39 +1,61 @@
 # Flyff Universe Auto Heal Single (Firefox)
 
-## System Description
-This AutoHotkey script is designed for the game Flyff Universe. It automates the healing process for a single character in the game when using the Firefox browser. The script does not monitor the character's health but starts working when a button is pressed, ensuring continuous gameplay without manual intervention.
-
-## Usage Instructions
-1. **Install AutoHotkey**: Ensure you have AutoHotkey installed on your system. You can download it from [AutoHotkey's official website](https://www.autohotkey.com/).
-2. **Download the Script**: Download the `Flyff_AutoHeal_Step_Buff_To_Healing_single.ahk` script from this repository.
-3. **Configure the Script**: Open the script in a text editor and configure any necessary settings such as key bindings or health thresholds.
-4. **Run the Script**: Double-click the script file to run it. Make sure your character is in the game and the Firefox browser is active.
-5. **How to Use**
-    1. Press the Mouse Button Next to start the main heal. The script will use the configured buffs first, then start the main heal. During the heal, you can use up to 3 items or buffs by pressing the corresponding number keys. Press the button again to cancel.
-    2. Press the Mouse Button Back to start the mini heal. The script will heal immediately without using any buffs. Press the button again to cancel.
-
-## Author Information
-This script was created by [WADADADANG]. For any questions or support, please contact Discord[.wadadadang]
-
-## README.md Author Information
-This README.md was written by GitHub Copilot. If you have any suggestions or improvements, feel free to contribute to the repository.
-
-# Flyff Universe Auto Heal Single (Firefox) (ภาษาไทย)
-
 ## คำอธิบายระบบ
-สคริปต์ AutoHotkey นี้ถูกออกแบบมาสำหรับเกม Flyff Universe โดยจะทำการรักษาตัวละครในเกมโดยอัตโนมัติเมื่อใช้เบราว์เซอร์ Firefox สคริปต์นี้ไม่ได้ตรวจสอบเมื่อสุขภาพต่ำ แต่จะเริ่มทำงานเมื่อกดปุ่มเท่านั้น เพื่อให้การเล่นเกมต่อเนื่องโดยไม่ต้องแทรกแซงด้วยตนเอง
+สคริปต์ AutoHotkey นี้ถูกออกแบบมาสำหรับเกม Flyff Universe เพื่อช่วยอัตโนมัติในกระบวนการฮีลตัวละครในเกมเมื่อใช้งานผ่านเบราว์เซอร์ Firefox สคริปต์นี้รองรับโหมดการฮีล 2 แบบ ได้แก่ ฮีลหลัก (Main Heal) และฮีลย่อย (Mini Heal) รวมถึงการบัฟและการใช้งานไอเทมอัตโนมัติ ช่วยให้การเล่นเกมต่อเนื่องโดยไม่ต้องควบคุมด้วยตนเอง
 
-## วิธีการใช้งาน
-1. **ติดตั้ง AutoHotkey**: ตรวจสอบให้แน่ใจว่าคุณได้ติดตั้ง AutoHotkey ในระบบของคุณแล้ว คุณสามารถดาวน์โหลดได้จาก [เว็บไซต์ทางการของ AutoHotkey](https://www.autohotkey.com/)
-2. **ดาวน์โหลดสคริปต์**: ดาวน์โหลดสคริปต์ `Flyff_AutoHeal_Step_Buff_To_Healing_single.ahk` จากที่เก็บนี้
-3. **กำหนดค่าสคริปต์**: เปิดสคริปต์ในโปรแกรมแก้ไขข้อความและกำหนดค่าที่จำเป็น เช่น การตั้งค่าปุ่มหรือเกณฑ์สุขภาพ
-4. **เรียกใช้สคริปต์**: ดับเบิลคลิกที่ไฟล์สคริปต์เพื่อเรียกใช้ ตรวจสอบให้แน่ใจว่าตัวละครของคุณอยู่ในเกมและเบราว์เซอร์ Firefox กำลังทำงานอยู่
-5. **วิธีใช้งาน**
-    1. กดปุ่ม Mouse Button Next เพื่อเริ่มฮิวหลัก การทำงานจะใช้บัพในการตั้งค่าก่อน จึงจะเริ่มใช้ฮิวหลักและหลังจากฮิวเริ่มขึ้น จะมีการกดใช้งานไอเทมหรือบัพระหว่างฮิวได้ สูงสุด 3 ปุ่ม โดยเป็นตัวเลขเท่านั้น กดปุ่มอีกครั้งเพื่อยกเลิก
-    2. กดปุ่ม Mouse Button Back เริ่มใช้มินิฮิว การทำงานจะฮิวในทันที โดยไม่ใช้บัพอะไรทั้งนั้น เป็นตัวเลขเท่านั้น กดปุ่มอีกครั้งเพื่อยกเลิก
+### คุณสมบัติ
+- **ฮีลหลัก (Main Heal)**: ใช้บัฟที่ตั้งค่าไว้ก่อน จากนั้นเริ่มกระบวนการฮีลหลัก
+- **ฮีลย่อย (Mini Heal)**: ฮีลทันทีโดยไม่ใช้บัฟ
+- **การบัฟอัตโนมัติ**: บัฟตัวละครในช่วงเวลาที่กำหนด
+- **ตั้งค่าปุ่มได้เอง**: สามารถปรับแต่งปุ่มสำหรับฮีล บัฟ และการใช้งานไอเทมได้ง่าย
+- **แสดงสถานะ**: มีหน้าต่างแสดงสถานะเล็ก ๆ ที่มุมขวาล่างของหน้าจอ
 
-## ข้อมูลผู้เขียน
-สคริปต์นี้ถูกสร้างโดย [WADADADANG] หากมีคำถามหรือขอความช่วยเหลือ กรุณาติดต่อ Discord[.wadadadang]
+## วิธีใช้งาน
+1. **ติดตั้ง AutoHotkey**: ดาวน์โหลดและติดตั้ง AutoHotkey จาก [เว็บไซต์ทางการของ AutoHotkey](https://www.autohotkey.com/)
+2. **ดาวน์โหลดสคริปต์**: ดาวน์โหลดไฟล์ `Flyff_AutoHeal_Step_Buff_To_Healing_single.ahk` จากโฟลเดอร์นี้
+3. **ตั้งค่าสคริปต์**:
+    - เปิดไฟล์สคริปต์ด้วยโปรแกรมแก้ไขข้อความ
+    - ปรับแต่งปุ่มและค่าต่าง ๆ เช่น ช่วงเวลาฮีลและการบัฟตามต้องการ
+4. **รันสคริปต์**: ดับเบิลคลิกที่ไฟล์สคริปต์เพื่อเริ่มต้นใช้งาน ตรวจสอบให้แน่ใจว่าเกมกำลังทำงานและเบราว์เซอร์ Firefox เปิดอยู่
 
-## ข้อมูลผู้เขียน README.md
-README.md นี้ถูกเขียนโดย GitHub Copilot หากคุณมีข้อเสนอแนะหรือการปรับปรุงใด ๆ โปรดมีส่วนร่วมในที่เก็บนี้
+## การใช้งาน
+1. **ฮีลหลัก (Main Heal)**:
+    - กดปุ่ม **Mouse Button Next** เพื่อเริ่มฮีลหลัก
+    - สคริปต์จะใช้บัฟที่ตั้งค่าไว้ก่อน จากนั้นเริ่มกระบวนการฮีล
+    - ระหว่างฮีลสามารถกดปุ่มตัวเลขเพื่อใช้ไอเทมหรือบัฟเพิ่มเติมได้
+    - กดปุ่มอีกครั้งเพื่อหยุดฮีล
+2. **ฮีลย่อย (Mini Heal)**:
+    - กดปุ่ม **Mouse Button Back** เพื่อเริ่มฮีลย่อย
+    - สคริปต์จะฮีลทันทีโดยไม่ใช้บัฟ
+    - กดปุ่มอีกครั้งเพื่อหยุดฮีล
+3. **การบัฟอัตโนมัติ**:
+    - กดปุ่ม **Home** เพื่อเปิดหรือปิดการบัฟอัตโนมัติ
+    - สคริปต์จะบัฟตัวละครในช่วงเวลาที่ตั้งค่าไว้
+4. **การบัฟด้วยตนเอง**:
+    - กดปุ่ม **Insert** เพื่อบัฟทั้งหมดที่ตั้งค่าไว้ทันที
+
+## การตั้งค่า
+- **การตั้งค่าฮีล**:
+    - `HealingLoop`: ตั้งค่าปุ่มและช่วงเวลาสำหรับฮีลหลัก
+    - `MiniHealingLoop`: ตั้งค่าปุ่มและช่วงเวลาสำหรับฮีลย่อย
+    - `BetweenHealing1`, `BetweenHealing2`, `BetweenHealing3`: ตั้งค่าปุ่มและช่วงเวลาสำหรับการกระทำระหว่างฮีล
+- **การตั้งค่าบัฟ**:
+    - `buttonBuffs`: รายการปุ่มสำหรับการบัฟ
+    - `IntervalBuffs`: ช่วงเวลาสำหรับการบัฟอัตโนมัติ
+    - `DelayBuff`: เวลาหน่วงระหว่างการกดปุ่มบัฟแต่ละปุ่ม
+- **การตั้งค่า UI**:
+    - สคริปต์จะแสดงหน้าต่างสถานะเล็ก ๆ ที่มุมขวาล่างของหน้าจอ สามารถปรับตำแหน่งและขนาดได้ในสคริปต์
+
+## การแก้ไขปัญหา
+- ตรวจสอบว่าเบราว์เซอร์ Firefox เปิดอยู่และเกมกำลังทำงาน
+- หากสคริปต์ไม่ทำงาน ให้ตรวจสอบการตั้งค่าปุ่มและปรับให้ตรงกับการตั้งค่าในเกม
+- ตรวจสอบว่า AutoHotkey ติดตั้งและทำงานอย่างถูกต้อง
+
+## ผู้พัฒนา
+สคริปต์นี้พัฒนาโดย [WADADADANG] หากมีคำถามหรือปัญหา สามารถติดต่อได้ที่ Discord[.wadadadang]
+
+## การร่วมพัฒนา
+หากมีข้อเสนอแนะหรือการปรับปรุง สามารถร่วมพัฒนาได้ในโฟลเดอร์นี้
+
+## ใบอนุญาต
+โปรเจกต์นี้อยู่ภายใต้ลิขสิทธิ์แบบ MIT License ดูรายละเอียดเพิ่มเติมได้ในไฟล์ LICENSE
