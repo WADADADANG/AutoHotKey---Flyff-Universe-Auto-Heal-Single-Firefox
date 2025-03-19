@@ -14,8 +14,7 @@ global BetweenHealing3 = False ; [ 0, 9000 ] ; ตำแหน่งปุ่ม
 
 global FirstStep := [ [ 3, 500 ], [4, 500 ] ] ; ตำแหน่งปุ่มสำหรับเริ่มต้น [ ปุ่ม, ระยะเวลา ] จะทำงานก่อน ฮิว หลัก
 
-global isRepeatBuff := False 
-global isBuff := False
+global isBuff := False ; เก็บสถานะทำงานอยู่หรือไม่ ห้ามแก้ไข
 global IntervalBuffs := 1000 * 60 * 10 ; ตั้งเวลาให้บัฟทุกๆ 10 นาที
 global DelayBuff := 800 ; หน่วงเวลาระหว่างการกดปุ่ม
 global buttonBuffs := [ "F3", 1, 2, 3, 4, 5, 6, "F4", 1, 2, 3, 4, 5, "F1" ] ; ปุ่มที่ใช้ในการบัฟ
@@ -184,11 +183,7 @@ StartBuff() {
 
     if WindowTarget {
         StartBuffs()
-        if isRepeatBuff {
-            SetTimer, TimerBuffs, %IntervalBuffs%
-        } else {
-            StopBuff()
-        }
+        SetTimer, TimerBuffs, %IntervalBuffs%
     } else {
         isBuff := False
         if IsShowTrayTip {
@@ -208,7 +203,7 @@ StopBuff() {
 ; ฟังก์ชันเริ่มต้นการกดปุ่มบัฟ
 StartBuffs() {
     if WindowTarget {
-        GuiShow("Buffing", "Blue")
+        GuiShow("Auto Buffing", "Aqua")
         WinGet, WindowTargetPID, PID, ahk_id %WindowTarget%
 
         if buttonBuffs {
@@ -218,13 +213,34 @@ StartBuffs() {
                 ControlSend, , {%PressKey%}, ahk_pid %WindowTargetPID%
                 Sleep, DelayBuff
             }
-            GuiShow("Waiting", "Red")
+            GuiShow("Auto Waiting", "Teal")
         }
     }
 }
 
-; การกดปุ่ม XButton1 เพื่อเริ่มหรือหยุดการบัฟ
+
 Insert::
+
+    if !WindowTarget {
+        FindWindowTarget( )
+    }
+
+    if WindowTarget {
+        GuiShow("Buffing", "White")
+        WinGet, WindowTargetPID, PID, ahk_id %WindowTarget%
+
+        if buttonBuffs {
+            For i, PressKey in buttonBuffs {
+                WinGet, WindowTargetPID, PID, ahk_id %WindowTarget%
+                ControlSend, , {%PressKey%}, ahk_pid %WindowTargetPID%
+                Sleep, DelayBuff
+            }
+            GuiHide()
+        }
+    }
+return
+
+Home::
     if isBuff {
         StopBuff()
     } else {
