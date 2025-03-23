@@ -17,7 +17,7 @@ global FirstStep := [ [ 3, 500 ], [4, 500 ] ] ; ตำแหน่งปุ่�
 global isBuff := False ; เก็บสถานะทำงานอยู่หรือไม่ ห้ามแก้ไข
 global IntervalBuffs := 1000 * 60 * 10 ; ตั้งเวลาให้บัฟทุกๆ 10 นาที
 global DelayBuff := 800 ; หน่วงเวลาระหว่างการกดปุ่ม
-global buttonBuffs := [ "F3", 1, 2, 3, 4, 5, 6, "F4", 1, 2, 3, 4, 5, "F1" ] ; ปุ่มที่ใช้ในการบัฟ
+global buttonBuffs := [ "F3", 1, 2, 3, 4, 5, 6, 7, "F4", 1, 2, 3, 4, 5, "F1" ] ; ปุ่มที่ใช้ในการบัฟ
 
 global IsShowTrayTip := False
 
@@ -177,6 +177,16 @@ StopMiniHeal( ) {
 
 ; ฟังก์ชันเริ่มต้นการบัฟ
 StartBuff() {
+
+    if isHealing {
+        StopHeal( )
+    }
+
+    if isMininHealing {
+        StopMiniHeal( )
+    }
+
+
     if !WindowTarget {
         FindWindowTarget()
     }
@@ -197,7 +207,6 @@ StartBuff() {
 StopBuff() {
     SetTimer, TimerBuffs, Off
     isBuff := False
-    GuiHide()
 }
 
 ; ฟังก์ชันเริ่มต้นการกดปุ่มบัฟ
@@ -220,6 +229,14 @@ StartBuffs() {
 
 
 Insert::
+
+    if isHealing {
+        StopHeal( )
+    }
+
+    if isMininHealing {
+        StopMiniHeal( )
+    }
 
     if !WindowTarget {
         FindWindowTarget( )
