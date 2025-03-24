@@ -3,16 +3,17 @@ DetectHiddenWindows, On
 global WindowTarget := False ; เก็บข้อมูล browser firefox ที่เปิดอยู่
 
 global isHealing := False ; ตรวจสอบว่าหยุดหรือยัง
-global HealingLoop := [ 2, 1000 ] ; ตำแหน่งปุ่มสำหรับ ฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Back
 
 global isMininHealing := False ; ตรวจสอบว่าหยุดหรือยัง
-global MiniHealingLoop := [ 1, 1200 ] ; ตำแหน่งปุ่มสำหรับ มินิฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Next
+global MiniHealingLoop := [ 1, 1200 ] ; (Heal) ตำแหน่งปุ่มสำหรับ มินิฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Next
 
-global BetweenHealing1 = [ 8, 7500 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก 
-global BetweenHealing2 = [ 9, 9000 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
-global BetweenHealing3 = False ; [ 0, 9000 ] ; ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
+global HealingLoop := [ 2, 1000 ] ; (Heal Rain) ตำแหน่งปุ่มสำหรับ ฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Back
 
-global FirstStep := [ [ 3, 500 ], [4, 500 ] ] ; ตำแหน่งปุ่มสำหรับเริ่มต้น [ ปุ่ม, ระยะเวลา ] จะทำงานก่อน ฮิว หลัก
+global FirstStep := [ [ 3, 500 ], [ 4, 500 ] ] ; (Barrier of Life) (Geburah Tiphreth) ตำแหน่งปุ่มสำหรับเริ่มต้น [ ปุ่ม, ระยะเวลา ] จะทำงานก่อน ฮิว หลัก
+
+global BetweenHealing1 = [ 5, 9000 ] ; (Merkaba Hanzelrusha) ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก 
+global BetweenHealing2 = [ 6, 7500 ] ; (Restore MP) ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
+global BetweenHealing3 = False ; [ 0, 9000 ] ; (ปิดใช้งาน) ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
 
 global isBuff := False ; เก็บสถานะทำงานอยู่หรือไม่ ห้ามแก้ไข
 global IntervalBuffs := 1000 * 60 * 10 ; ตั้งเวลาให้บัฟทุกๆ 10 นาที
