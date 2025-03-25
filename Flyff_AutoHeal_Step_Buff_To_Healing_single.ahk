@@ -5,7 +5,7 @@ global WindowTarget := False ; เก็บข้อมูล browser firefox �
 global isHealing := False ; ตรวจสอบว่าหยุดหรือยัง
 
 global isMininHealing := False ; ตรวจสอบว่าหยุดหรือยัง
-global MiniHealingLoop := [ 1, 2500 ] ; (Heal) ตำแหน่งปุ่มสำหรับ มินิฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Next
+global MiniHealingLoop := [ 1, 1500 ] ; (Heal) ตำแหน่งปุ่มสำหรับ มินิฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Next
 
 global HealingLoop := [ 2, 1000 ] ; (Heal Rain) ตำแหน่งปุ่มสำหรับ ฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Back
 
@@ -20,8 +20,6 @@ global isAutoBuff := False ; เก็บสถานะทำงานอยู
 global IntervalBuffs := 1000 * 60 * 10 ; ตั้งเวลาให้บัฟทุกๆ 10 นาที
 global DelayBuff := 800 ; หน่วงเวลาระหว่างการกดปุ่ม
 global buttonBuffs := [ "F3", 1, 2, 3, 4, 5, 6, 7, "F4", 1, 2, 3, 4, 5, "F1" ] ; ปุ่มที่ใช้ในการบัฟ
-
-global IsShowTrayTip := False
 
 ; ขนาดหน้าต่าง UI
 GuiWidth := 100
@@ -156,11 +154,6 @@ StartMiniHeal( ) {
             SetTimer, MiniHealingTimer, %intervalMiniHealing%
     
             isMininHealing := True
-            
-            if IsShowTrayTip {
-                TrayTip
-                TrayTip, AutoHeal, Start Mini Healing
-            }
 
         }
     }
@@ -171,11 +164,6 @@ StopMiniHeal( ) {
     if isMininHealing {
         SetTimer, MiniHealingTimer, Off
         isMininHealing := False
-
-        if IsShowTrayTip {
-            TrayTip
-            TrayTip, AutoHeal, Mini Heal Stopped
-        }
         GuiShow( "Mini Stopping", "Yellow" )
     }
 }
@@ -205,10 +193,6 @@ StartAutoBuff() {
         SetTimer, TimerAutoBuffs, %IntervalBuffs%
     } else {
         isAutoBuff := False
-        if IsShowTrayTip {
-            TrayTip
-            TrayTip, AutoBuff, Please Open The Firefox
-        }
     }
 }
 
