@@ -16,7 +16,6 @@ global BetweenHealing2 = [ 6, 7500 ] ; (Restore MP) ตำแหน่งปุ�
 global BetweenHealing3 = False ; [ 0, 9000 ] ; (ปิดใช้งาน) ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
 
 global isBuff := False ; เก็บสถานะทำงานอยู่หรือไม่ ห้ามแก้ไข
-global isAutoBuff := False ; เก็บสถานะทำงานอยู่หรือไม่ ห้ามแก้ไข
 global IntervalBuffs := 1000 * 60 * 10 ; ตั้งเวลาให้บัฟทุกๆ 10 นาที
 global DelayBuff := 800 ; หน่วงเวลาระหว่างการกดปุ่ม
 global buttonBuffs := [ "F3", 1, 2, 3, 4, 5, 6, 7, "F4", 1, 2, 3, 4, 5, "F1" ] ; ปุ่มที่ใช้ในการบัฟ
@@ -168,40 +167,6 @@ StopMiniHeal( ) {
     }
 }
 
-; ฟังก์ชันเริ่มต้นการบัฟ
-StartAutoBuff() {
-
-    if isHealing {
-        StopHeal( )
-    }
-
-    if isMininHealing {
-        StopMiniHeal( )
-    }
-
-    if !WindowTarget {
-        FindWindowTarget( )
-    } else {
-        if !WinExist("ahk_id " . WindowTarget) {
-            FindWindowTarget( )
-        }
-    }
-
-    if WindowTarget {
-        isAutoBuff := True
-        StartBuffs()
-        SetTimer, TimerAutoBuffs, %IntervalBuffs%
-    } else {
-        isAutoBuff := False
-    }
-}
-
-; ฟังก์ชันหยุดการบัฟ
-StopAutoBuff() {
-    SetTimer, TimerAutoBuffs, Off
-    isAutoBuff := False
-    GuiHide()
-}
 
 ; ฟังก์ชันเริ่มต้นการกดปุ่มบัฟ
 StartBuffs() {
@@ -220,7 +185,6 @@ StartBuffs() {
         }
     }
 }
-
 
 Insert::
     if isHealing {
@@ -241,6 +205,7 @@ Insert::
 
     if WindowTarget {
         GuiShow("Buffing", "White")
+        isBuff := True
         WinGet, WindowTargetPID, PID, ahk_id %WindowTarget%
 
         if buttonBuffs {
@@ -249,63 +214,53 @@ Insert::
                 ControlSend, , {%PressKey%}, ahk_pid %WindowTargetPID%
                 Sleep, DelayBuff
             }
+            isBuff := False
             GuiHide()
         }
     }
 return
 
-Home::
-    if isAutoBuff {
-        StopAutoBuff()
-    } else {
-        StartAutoBuff()
-    }
-return
-
 XButton1::
 
-    if isAutoBuff {
-        StartAutoBuff()
-    }
-
-    if isMininHealing {
-        StopMiniHeal( )
-        Sleep 500
-    }
-
-    if isHealing {
-        StopHeal( )
-        GuiHide()
+    if isBuff {
+        TrayTip
+        TrayTip, Buff, Please wait a moment. Buff is being scheduled
     } else {
-        StartHeal( )
+        if isMininHealing {
+            StopMiniHeal( )
+            Sleep 500
+        }
+
+        if isHealing {
+            StopHeal( )
+            GuiHide()
+        } else {
+            StartHeal( )
+        }
     }
     
 return
 
 XButton2::
 
-    if isAutoBuff {
-        StartAutoBuff()
-    }
-
-    if isHealing {
-        StopHeal( )
-        Sleep 500
-    }
-
-    if isMininHealing {
-        StopMiniHeal( )
-        GuiHide()
+     if isBuff {
+        TrayTip
+        TrayTip, Buff, Please wait a moment. Buff is being schedule
     } else {
-        StartMiniHeal( )
+        if isHealing {
+            StopHeal( )
+            Sleep 500
+        }
+
+        if isMininHealing {
+            StopMiniHeal( )
+            GuiHide()
+        } else {
+            StartMiniHeal( )
+        }
     }
 
 return
-
-; ตัวจับเวลาเพื่อเริ่มต้นการบัฟ
-TimerAutoBuffs:
-    StartBuffs()
-Return
 
 HealingTimer:
 
