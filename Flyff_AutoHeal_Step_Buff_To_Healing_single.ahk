@@ -5,7 +5,7 @@ global WindowTarget := False ; เก็บข้อมูล browser firefox �
 global isHealing := False ; ตรวจสอบว่าหยุดหรือยัง
 
 global isMininHealing := False ; ตรวจสอบว่าหยุดหรือยัง
-global MiniHealingLoop := [ 1, 1200 ] ; (Heal) ตำแหน่งปุ่มสำหรับ มินิฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Next
+global MiniHealingLoop := [ 1, 2500 ] ; (Heal) ตำแหน่งปุ่มสำหรับ มินิฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Next
 
 global HealingLoop := [ 2, 1000 ] ; (Heal Rain) ตำแหน่งปุ่มสำหรับ ฮิว [ ปุ่ม, ระยะเวลา ] ปุ่ม Mouse Botton Back
 
@@ -16,6 +16,7 @@ global BetweenHealing2 = [ 6, 7500 ] ; (Restore MP) ตำแหน่งปุ�
 global BetweenHealing3 = False ; [ 0, 9000 ] ; (ปิดใช้งาน) ตำแหน่งปุ่ม ระหว่างฮิว [ ปุ่ม, ระยะเวลา ] จะทำงานระหว่างฮิวหลัก
 
 global isBuff := False ; เก็บสถานะทำงานอยู่หรือไม่ ห้ามแก้ไข
+global isAutoBuff := False ; เก็บสถานะทำงานอยู่หรือไม่ ห้ามแก้ไข
 global IntervalBuffs := 1000 * 60 * 10 ; ตั้งเวลาให้บัฟทุกๆ 10 นาที
 global DelayBuff := 800 ; หน่วงเวลาระหว่างการกดปุ่ม
 global buttonBuffs := [ "F3", 1, 2, 3, 4, 5, 6, 7, "F4", 1, 2, 3, 4, 5, "F1" ] ; ปุ่มที่ใช้ในการบัฟ
@@ -64,17 +65,12 @@ GuiHide( ) {
 GuiHide( )
 
 FindWindowTarget( ) {
-    if !WindowTarget {
-        if WinExist("ahk_exe firefox.exe") {
-            WinGet, WindowTarget, ID, ahk_exe firefox.exe 
-        } else {
-            WindowTarget := False
-            if IsShowTrayTip {
-                TrayTip
-                TrayTip, AutoHeal, Please open the Firefox
-            }
-            Return
-        }
+    if WinExist("ahk_exe firefox.exe") {
+        WinGet, WindowTarget, ID, ahk_exe firefox.exe 
+    } else {
+        WindowTarget := False
+        TrayTip
+        TrayTip, AutoHeal, Please open the firefox
     }
 }
 
@@ -82,6 +78,10 @@ StartHeal( ) {
 
     if !WindowTarget {
         FindWindowTarget( )
+    } else {
+        if !WinExist("ahk_id " . WindowTarget) {
+            FindWindowTarget( )
+        }
     }
 
     if WindowTarget {
@@ -138,6 +138,10 @@ StartMiniHeal( ) {
 
     if !WindowTarget {
         FindWindowTarget( )
+    } else {
+        if !WinExist("ahk_id " . WindowTarget) {
+            FindWindowTarget( )
+        }
     }
 
     if WindowTarget {
@@ -177,59 +181,7 @@ StopMiniHeal( ) {
 }
 
 ; ฟังก์ชันเริ่มต้นการบัฟ
-StartBuff() {
-
-    if isHealing {
-        StopHeal( )
-    }
-
-    if isMininHealing {
-        StopMiniHeal( )
-    }
-
-
-    if !WindowTarget {
-        FindWindowTarget()
-    }
-
-    if WindowTarget {
-        StartBuffs()
-        SetTimer, TimerBuffs, %IntervalBuffs%
-    } else {
-        isBuff := False
-        if IsShowTrayTip {
-            TrayTip
-            TrayTip, AutoBuff, Please Open The Firefox
-        }
-    }
-}
-
-; ฟังก์ชันหยุดการบัฟ
-StopBuff() {
-    SetTimer, TimerBuffs, Off
-    isBuff := False
-}
-
-; ฟังก์ชันเริ่มต้นการกดปุ่มบัฟ
-StartBuffs() {
-    if WindowTarget {
-        GuiShow("Auto Buffing", "Aqua")
-        WinGet, WindowTargetPID, PID, ahk_id %WindowTarget%
-
-        if buttonBuffs {
-            isBuff := True
-            For i, PressKey in buttonBuffs {
-                WinGet, WindowTargetPID, PID, ahk_id %WindowTarget%
-                ControlSend, , {%PressKey%}, ahk_pid %WindowTargetPID%
-                Sleep, DelayBuff
-            }
-            GuiShow("Auto Waiting", "Teal")
-        }
-    }
-}
-
-
-Insert::
+StartAutoBuff() {
 
     if isHealing {
         StopHeal( )
@@ -241,6 +193,66 @@ Insert::
 
     if !WindowTarget {
         FindWindowTarget( )
+    } else {
+        if !WinExist("ahk_id " . WindowTarget) {
+            FindWindowTarget( )
+        }
+    }
+
+    if WindowTarget {
+        isAutoBuff := True
+        StartBuffs()
+        SetTimer, TimerAutoBuffs, %IntervalBuffs%
+    } else {
+        isAutoBuff := False
+        if IsShowTrayTip {
+            TrayTip
+            TrayTip, AutoBuff, Please Open The Firefox
+        }
+    }
+}
+
+; ฟังก์ชันหยุดการบัฟ
+StopAutoBuff() {
+    SetTimer, TimerAutoBuffs, Off
+    isAutoBuff := False
+    GuiHide()
+}
+
+; ฟังก์ชันเริ่มต้นการกดปุ่มบัฟ
+StartBuffs() {
+    if WindowTarget {
+        GuiShow("Auto Buffing", "Aqua")
+        WinGet, WindowTargetPID, PID, ahk_id %WindowTarget%
+
+        if buttonBuffs {
+            For i, PressKey in buttonBuffs {
+                WinGet, WindowTargetPID, PID, ahk_id %WindowTarget%
+                ControlSend, , {%PressKey%}, ahk_pid %WindowTargetPID%
+                Sleep, DelayBuff
+            }
+            GuiShow("Auto Waiting", "Teal")
+            Return True
+        }
+    }
+}
+
+
+Insert::
+    if isHealing {
+        StopHeal( )
+    }
+
+    if isMininHealing {
+        StopMiniHeal( )
+    }
+
+    if !WindowTarget {
+        FindWindowTarget( )
+    } else {
+        if !WinExist("ahk_id " . WindowTarget) {
+            FindWindowTarget( )
+        }
     }
 
     if WindowTarget {
@@ -259,17 +271,17 @@ Insert::
 return
 
 Home::
-    if isBuff {
-        StopBuff()
+    if isAutoBuff {
+        StopAutoBuff()
     } else {
-        StartBuff()
+        StartAutoBuff()
     }
 return
 
 XButton1::
 
-    if isBuff {
-        StopBuff()
+    if isAutoBuff {
+        StartAutoBuff()
     }
 
     if isMininHealing {
@@ -288,8 +300,8 @@ return
 
 XButton2::
 
-    if isBuff {
-        StopBuff()
+    if isAutoBuff {
+        StartAutoBuff()
     }
 
     if isHealing {
@@ -307,7 +319,7 @@ XButton2::
 return
 
 ; ตัวจับเวลาเพื่อเริ่มต้นการบัฟ
-TimerBuffs:
+TimerAutoBuffs:
     StartBuffs()
 Return
 
